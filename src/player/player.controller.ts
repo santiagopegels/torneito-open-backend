@@ -19,8 +19,8 @@ export class PlayerController {
   constructor(private readonly playerService: PlayerService) {}
 
   @Post()
-  create(@Body() createPlayerDto: CreatePlayerDto) {
-    return this.playerService.create(createPlayerDto);
+  async create(@Body() createPlayerDto: CreatePlayerDto) {
+    return await this.playerService.create(createPlayerDto);
   }
 
   @Get()
@@ -42,7 +42,7 @@ export class PlayerController {
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseMongoIdPipe) id: string) {
+  async remove(@Param('id', ParseMongoIdPipe) id: string) {
     return this.playerService.remove(id);
   }
 }

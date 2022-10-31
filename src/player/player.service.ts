@@ -23,16 +23,14 @@ export class PlayerService {
       return player;
     } catch (error) {
       console.log(error);
-      throw new InternalServerErrorException(
-        `Can't create - Check server logs`,
-      );
     }
   }
 
-  findAll(paginationDto: PaginationDto) {
-    const { limit = 20, offset = 0 } = paginationDto;
-
-    return this.playerModel.find();
+  findAll({ limit = 20, offset = 0 }: PaginationDto) {
+    return this.playerModel.find({
+      take: limit,
+      skip: offset,
+    });
   }
 
   async findOne(id: string) {
@@ -56,16 +54,13 @@ export class PlayerService {
       return { ...player.toJSON(), ...updatePlayerDto };
     } catch (error) {
       console.log(error);
-      throw new InternalServerErrorException(
-        `Can't update - Check server logs`,
-      );
     }
   }
 
   async remove(id: string) {
     const { deletedCount } = await this.playerModel.deleteOne({ _id: id });
     if (deletedCount === 0)
-      throw new BadRequestException(`Pokemon with id "${id}" not found`);
+      throw new BadRequestException(`Player with id "${id}" not found`);
 
     return;
   }
