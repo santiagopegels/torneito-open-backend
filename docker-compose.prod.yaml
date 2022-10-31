@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  torneitoapp:
+    depends_on:
+      - db
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: torneito-open
+    container_name: torneitoapp
+    restart: always
+    ports:
+      - "${PORT}:${PORT}"
+    environment:
+      MONGODB: ${MONGODB}
+      PORT: ${PORT}
+      DEFAULT_LIMIT: ${DEFAULT_LIMIT}
