@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TournamentModule } from './tournament/tournament.module';
 import { CategoryModule } from './category/category.module';
 import { MatchModule } from './match/match.module';
+import { AuthModule } from './auth/auth.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -19,6 +20,7 @@ import configuration from './config/configuration';
     TournamentModule,
     CategoryModule,
     MatchModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

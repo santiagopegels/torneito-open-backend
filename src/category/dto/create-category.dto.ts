@@ -1,4 +1,10 @@
-import { IsDefined, IsIn, IsMongoId, IsOptional, IsString } from 'class-validator';
+import {
+  IsDefined,
+  IsIn,
+  IsMongoId,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { Match } from 'src/match/entities/match.entity';
 import { Player } from 'src/player/entities/player.entity';
 import { Category } from '../entities/category.entity';
