@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { PaginationDto } from 'src/common/dto/paginationDto.dto';
@@ -31,15 +31,29 @@ export class TournamentService {
       .populate({ path: 'categories', populate: { path: 'players' } });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} tournament`;
+  findOne(id: string) {
+    return this.tournamentModel
+      .findOne({ _id: id })
+      .populate({ path: 'categories', populate: { path: 'players' } });
   }
 
-  update(id: number, updateTournamentDto: UpdateTournamentDto) {
-    return `This action updates a #${id} tournament`;
+  async update(id: string, updateTournamentDto: UpdateTournamentDto) {
+    const tournement = await this.findOne(id);
+
+    try {
+      await tournement.updateOne(updateTournamentDto);
+
+      return { ...tournement.toJSON(), ...updateTournamentDto };
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} tournament`;
+  async remove(id: string) {
+    const { deletedCount } = await this.tournamentModel.deleteOne({ _id: id });
+    if (deletedCount === 0)
+      throw new BadRequestException(`Tournament with id "${id}" not found`);
+
+    return;
   }
 }

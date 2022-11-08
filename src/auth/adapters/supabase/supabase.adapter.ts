@@ -1,36 +1,32 @@
-import { UnauthorizedException } from '@nestjs/common';
-import { AuthAdapter } from '../../interfaces/auth-adapter.interface';
 import { SupabaseClientSingleton } from './supabase-client.singleton';
 
-export class SupabaseAdapter implements AuthAdapter {
+export class SupabaseAdapter {
   private supabase;
 
   constructor() {
     this.supabase = SupabaseClientSingleton.getInstance();
   }
 
-  async login(email: string, password: string) {
-    const { data, error } = await this.supabase.auth.signInWithPassword({
-      email,
-      password,
+  async userRoles(token: string) {
+    const user = await this.getUser(token);
+
+    const { data: roles } = await this.supabase
+      .from('roles')
+      .select('name, users_roles!inner(*)')
+      .eq('users_roles.user_id', user.id);
+
+    const userRoles = roles.map((role) => {
+      return role.name;
     });
 
-    if (error) throw new UnauthorizedException(error.message);
-
-    return {
-      access_token: data.session.access_token,
-      refresh_token: data.session.refresh_token,
-    };
+    return userRoles;
   }
 
-  async register(email: string, password: string) {
-    const { data, error } = await this.supabase.auth.signUp({
-      email,
-      password,
-    });
+  async getUser(token: string) {
+    const {
+      data: { user },
+    } = await this.supabase.auth.getUser(token);
 
-    if (error) throw new UnauthorizedException(error.message);
-
-    return data;
+    return user;
   }
 }
