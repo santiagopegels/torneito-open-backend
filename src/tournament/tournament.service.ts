@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { Category } from 'src/category/entities/category.entity';
 import { PaginationDto } from 'src/common/dto/paginationDto.dto';
 import { CreateTournamentDto } from './dto/create-tournament.dto';
 import { UpdateTournamentDto } from './dto/update-tournament.dto';
@@ -23,12 +24,7 @@ export class TournamentService {
   }
 
   findAll({ limit = 20, offset = 0 }: PaginationDto) {
-    return this.tournamentModel
-      .find({
-        take: limit,
-        skip: offset,
-      })
-      .populate({ path: 'categories', populate: { path: 'players' } });
+    return this.tournamentModel.find({},{"categories": 0}).limit(limit).skip(offset);
   }
 
   findOne(id: string) {
@@ -55,5 +51,19 @@ export class TournamentService {
       throw new BadRequestException(`Tournament with id "${id}" not found`);
 
     return;
+  }
+
+  async addCategory(id: string, categoryId: string) {
+    const tournament = await this.tournamentModel.findOne({ _id: id });
+    tournament.categories.push(categoryId);
+
+    return tournament.save();
+  }
+
+  async removeCategory(id: string, categoryId: string) {
+    const tournament = await this.tournamentModel.findOne({ _id: id });
+    tournament.categories.pull(categoryId);
+
+    return tournament.save();
   }
 }

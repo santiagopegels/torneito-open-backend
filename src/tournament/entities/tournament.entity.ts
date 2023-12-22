@@ -1,5 +1,5 @@
-import { Prop, raw, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, now } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import mongoose, { Document, now, ObjectId, Types } from 'mongoose';
 import { Category } from 'src/category/entities/category.entity';
 
 @Schema()
@@ -12,8 +12,8 @@ export class Tournament extends Document {
   })
   startDate: Date;
 
-  @Prop([Category])
-  categories: Category[];
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Category' }] })
+  categories: Types.Array<Category>;
 
   @Prop({ default: now() })
   createdAt: Date;

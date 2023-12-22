@@ -8,14 +8,10 @@ import {
   CategorySchema,
 } from 'src/category/entities/category.entity';
 import { Player, PlayerSchema } from 'src/player/entities/player.entity';
-import { APP_GUARD } from '@nestjs/core';
-import { RolesGuard } from 'src/auth/roles/roles.guard';
 
 @Module({
   controllers: [TournamentController],
-  providers: [
-    TournamentService
-  ],
+  providers: [TournamentService],
   imports: [
     MongooseModule.forFeature([
       {
