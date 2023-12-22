@@ -6,10 +6,11 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { MatchService } from './match.service';
 import { CreateMatchDto } from './dto/create-match.dto';
-import { UpdateMatchDto } from './dto/update-match.dto';
+import { ParseMongoIdPipe } from 'src/common/pipes/parse-mongo-id.pipe';
 
 @Controller('match')
 export class MatchController {
@@ -20,23 +21,32 @@ export class MatchController {
     return this.matchService.create(createMatchDto);
   }
 
-  @Get()
-  findAll() {
-    return this.matchService.findAll();
+  @Get('category/:categoryId')
+  findAll(@Param('categoryId', ParseMongoIdPipe) categoryId: string) {
+    return this.matchService.findAll(categoryId);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.matchService.findOne(+id);
+  @Get(':matchId/category/:categoryId')
+  findOne(
+    @Param('matchId', ParseMongoIdPipe) matchId: string,
+    @Param('categoryId', ParseMongoIdPipe) categoryId: string,
+  ) {
+    return this.matchService.findOne(matchId, categoryId);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMatchDto: UpdateMatchDto) {
-    return this.matchService.update(+id, updateMatchDto);
+  update(
+    @Param('id', ParseMongoIdPipe) id: string,
+    @Body() createMatchDto: CreateMatchDto,
+  ) {
+    return this.matchService.update(id, createMatchDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.matchService.remove(+id);
+  @Delete(':matchId/category/:categoryId')
+  remove(
+    @Param('matchId', ParseMongoIdPipe) matchId: string,
+    @Param('categoryId', ParseMongoIdPipe) categoryId: string,
+  ) {
+    return this.matchService.remove(matchId, categoryId);
   }
 }

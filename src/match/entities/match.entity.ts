@@ -1,27 +1,24 @@
 import { Prop, Schema } from '@nestjs/mongoose';
+import mongoose from 'mongoose';
 import { Player } from 'src/player/entities/player.entity';
-
-const TYPE = ['Single', 'Doble'];
 
 @Schema()
 export class Match {
   @Prop()
+  _id: string;
+
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Player' })
   player1: Player;
 
-  @Prop()
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Player' })
   player2: Player;
 
   @Prop()
-  player3: Player;
+  round: number;
 
   @Prop()
-  player4: Player;
+  matchNumber: number;
 
   @Prop()
   result: string;
-
-  @Prop()
-  type: string;
-
-  public static type = () => TYPE;
 }
