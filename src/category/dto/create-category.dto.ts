@@ -1,30 +1,13 @@
-import {
-  IsDefined,
-  IsIn,
-  IsMongoId,
-  IsOptional,
-  IsString,
-} from 'class-validator';
-import { Match } from 'src/match/entities/match.entity';
-import { Player } from 'src/player/entities/player.entity';
+import { Type } from 'class-transformer';
+import { IsMongoId, IsObject } from 'class-validator';
 import { Category } from '../entities/category.entity';
+import { CategoryDto } from './category.dto';
 
 export class CreateCategoryDto {
-  @IsString()
-  @IsDefined()
-  @IsIn(Category.years())
-  year: string;
+  @IsMongoId()
+  tournamentId: string;
 
-  @IsString()
-  @IsDefined()
-  @IsIn(Category.levels())
-  level: string;
-
-  @IsOptional()
-  @IsMongoId({ each: true })
-  players: Player[];
-
-  @IsOptional()
-  @IsMongoId({ each: true })
-  matches: Match[];
+  @IsObject()
+  @Type(() => CategoryDto)
+  category: Category;
 }
